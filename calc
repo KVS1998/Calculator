@@ -1,0 +1,346 @@
+import java.io.*;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+public class Calculator implements ActionListener
+{
+    double d=0;
+    static double ans=0.0;
+    //for displaying the final answer
+    JLabel jl,mid;
+    //panel for jl,b,b1,b2
+    JPanel paneldown,panelup,jpl,jpb,jpb1,jpb2,jac;
+    //for holding the infix expression
+    static String s="";
+    String sign="";
+    //for buttons 0,1,2,3,4..9
+    String buttonorder="1234567890.=";
+    JButton b[]=new JButton[12];
+    //for buttons +,-,*,/,=
+    JButton b1[]=new  JButton[4];
+    //for buttons sin,cos,tan
+    JButton b2[]=new JButton[4];
+    JButton ac=new JButton("AC");
+    int k=0,h=0;
+    double f=0;
+    public Calculator()   
+    {
+        JFrame jfrm=new JFrame("Calculator");
+        jfrm.setSize(300,280);
+        jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        paneldown=new JPanel();
+        panelup=new JPanel();
+        jac=new JPanel();
+        jpl=new JPanel();
+        jpb=new JPanel();
+        jpb1=new JPanel();        
+        jpb2=new JPanel();
+        jl=new JLabel();
+        mid=new JLabel();
+        jl.setForeground(Color.black);
+        //for buttons b[]
+        for(int i=0;i<12;i++)
+        {
+            b[i]=new JButton(""+buttonorder.charAt(i));
+            b[i].setSize(new Dimension(100,50));
+        }
+        for(int i=0;i<12;i++)
+        {
+            b[i].setBackground(new Color(62, 68, 79));
+            b[i].setForeground(Color.white);
+            jpb.add(b[i]);
+        }      
+        for(int i=0;i<12;i++)
+        {
+            b[i].addActionListener(this);
+        }
+        //for buttons b1[]
+        b1[0]=new JButton("+");
+        b1[1]=new JButton("-");
+        b1[2]=new JButton("*");
+        b1[3]=new JButton("/");
+        for(int i=0;i<4;i++)
+        {
+            b1[i].setBackground(new Color(62, 68, 79));
+            b1[i].setForeground(Color.white);
+            b1[i].setSize(new Dimension(100,50));
+            jpb1.add(b1[i]);
+        }
+        for(int i=0;i<4;i++)
+        {
+            b1[i].addActionListener(this);
+        }
+        //for buttons b2[]
+        b2[0]=new JButton("sin");
+        b2[1]=new JButton("cos");
+        b2[2]=new JButton("tan");
+        b2[3]=new JButton("log");
+        for(int i=0;i<4;i++)
+        {
+            b2[i].setBackground(new Color(62, 68, 79));
+            b2[i].setForeground(Color.white);
+            b2[i].setSize(new Dimension(70,50));
+            jpb2.add(b2[i]);
+        }
+        for(int i=0;i<4;i++)
+        {
+            b2[i].addActionListener(this);
+        }
+        jpl.add(jl);
+        jpb.setLayout(new GridLayout(4,4,10,10));
+        jpb1.setLayout(new GridLayout(4,1,10,10));
+        jpb2.setLayout(new GridLayout(4,1,10,10));
+        panelup.setLayout(new GridLayout(2,1,10,10));
+        jl.setText("0.0");
+        mid.setText(" ");
+        ac.setSize(new Dimension(50,50));
+        ac.addActionListener(this);
+        ac.setBackground(new Color(62, 68, 79));
+        ac.setForeground(Color.white);
+        jac.add(ac,BorderLayout.SOUTH);
+        panelup.add(jpl,BorderLayout.NORTH);
+        panelup.add(jac,BorderLayout.EAST); 
+        paneldown.setBackground(new Color(192,192,192));
+        jpb.setBackground(new Color(192,192,192));
+        jpb1.setBackground(new Color(192,192,192));
+        jpb2.setBackground(new Color(192,192,192));
+        paneldown.add(jpb,BorderLayout.WEST);
+        paneldown.add(jpb1,BorderLayout.EAST);
+        paneldown.add(jpb2,BorderLayout.CENTER);
+        jfrm.add(panelup,BorderLayout.NORTH);
+        jfrm.add(paneldown,BorderLayout.SOUTH);
+        jfrm.setVisible(true);
+    }
+    public void actionPerformed(ActionEvent ae)
+    {
+        try
+        {
+            if(ae.getActionCommand().equals("0"))
+            {
+                s=s+"0";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("1"))
+            {
+                s=s+"1";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("2"))
+            {
+                s=s+"2";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("3"))
+            {
+                s=s+"3";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("4"))
+            {
+                s=s+"4";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("5"))
+            {
+                s=s+"5";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("6"))
+            {
+                s=s+"6";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("7"))
+            {
+                s=s+"7";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("8"))
+            {
+                s=s+"8";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("9"))
+            {
+                s=s+"9";
+                jl.setText(s);
+            }
+            if(ae.getActionCommand().equals("AC"))
+            {
+                jl.setText("0.0");
+                s="";
+                sign="";
+                ans=0;
+                k=0;
+                f=0;
+            }
+            if(ae.getActionCommand().equals("="))
+            {
+                operate(sign);
+                jl.setText(Double.toString(ans));
+                sign="";
+                s=Double.toString(ans);
+                
+            }
+            if(ae.getActionCommand().equals("."))
+            {
+                s=s+".";
+                jl.setText(s);
+            }
+        }
+        catch(Exception e){}
+
+        
+        try
+        {
+            if(ae.getActionCommand().equals("+"))
+            {
+
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                operate(sign);
+                sign="+";      
+                jl.setText("+");
+                s="";
+            }
+            if(ae.getActionCommand().equals("-"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                operate(sign);
+                sign="-";      
+                jl.setText("-");
+                s="";
+            }
+            if(ae.getActionCommand().equals("/"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                operate(sign);
+                sign="/";      
+                jl.setText("/");
+                s="";
+            }
+            if(ae.getActionCommand().equals("*"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                operate(sign);
+                sign="*";      
+                jl.setText("*");
+                s="";
+            }
+
+            if(ae.getActionCommand().equals("sin"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }          
+                sign="";
+                ans=Math.sin(d);
+                jl.setText(Double.toString(ans));
+                s="";
+            }
+            if(ae.getActionCommand().equals("cos"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                sign="";
+                ans=Math.cos(d);
+                jl.setText(Double.toString(ans));
+                s="";
+            }
+            if(ae.getActionCommand().equals("tan"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                sign="";
+                ans=Math.tan(d);
+                jl.setText(Double.toString(ans));
+                s="";
+            }
+            if(ae.getActionCommand().equals("log"))
+            {
+                d=Double.parseDouble(s);
+                if(k==0)
+                {
+                    ans=ans+d;
+                    k++;
+                }
+                sign="";
+                ans=Math.log(d);
+                jl.setText(Double.toString(ans));
+                s="";
+            }
+        }
+        catch(Exception e){}
+        finally
+        {
+            mid.setText(Double.toString(ans));
+        }
+    }
+    public static void operate(String sign)
+{
+        try
+        {
+            if(sign=="+")
+            {                 
+                ans=ans+Double.parseDouble(s);        
+                sign="";
+            }
+            if(sign=="-")
+            {
+                ans=ans-Double.parseDouble(s);
+                sign="";
+            }
+            if(sign=="*")
+            {
+                ans=ans*Double.parseDouble(s);
+                sign="";
+            }
+            if(sign=="/")
+            {
+                ans=ans/Double.parseDouble(s);
+                sign="";
+            }
+        }
+        catch(Exception e){}
+    }
+    public static void main()
+    {
+        SwingUtilities.invokeLater(new Runnable() 
+            {	public void run()
+                {
+                    new Calculator();
+                }
+            });
+    }
+
+}
